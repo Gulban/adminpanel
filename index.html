@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <p><a class="link-opacity-10-hover" href="./addpage.html">Add page</a></p>
+    <div class="container mt-5">
+        <table class="table table-light">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Desc</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+     
+    <script>
+        const tbody = document.querySelector("tbody");
+
+        async function getAll() {
+            try {
+                const res = await fetch("https://6724af8bc39fedae05b25a17.mockapi.io/products");
+                const data = await res.json();
+                return data;
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        async function deleteById(id) {
+            try {
+                const res = await fetch("https://6724af8bc39fedae05b25a17.mockapi.io/products")
+                const data = await res.json()
+                const all = await getAll()
+                console.log(all);
+
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
+
+        
+        async function generateTable() {
+            const data = await getAll();
+            data.forEach(element => {
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <th scope="row">${element.id}</th>
+                    <td>${element.name}</td>
+                    <td>${element.price}</td>
+                    <td>${element.desc}</td>
+                    <td class="bg-danger d-flex align-items-center justify-content-center">X</td>
+                    <td class="bg-success d-flex align-items-center justify-content-center"><a href="./updatepage.html">UPDATE<a/></td>
+
+                `;
+                const deleteBtn = tr.querySelector(".bg-danger")
+                deleteBtn.onclick = async () => {
+                   await deleteById(element.id);
+                   tbody.innerHTML = "";
+                    generateTable()
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+
+
+
+        generateTable();
+    </script>
+</body>
+
+</html>
